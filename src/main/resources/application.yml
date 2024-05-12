@@ -1,0 +1,39 @@
+
+# Port
+server:
+  port: 10090
+
+# Eureka
+eureka:
+  instance:
+    preferred-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:18763/eureka}
+
+spring:
+  application:
+    name: API-GATEWAY
+#  config:
+#    import: configserver://localhost:10091
+
+# Gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: PRODUCT-SERVICE
+          uri: lb://PRODUCT-SERVICE
+#          uri: http://localhost:10101
+          predicates:
+            - Path=/products/**
+
+        - id: ORDER-SERVICE
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/**
